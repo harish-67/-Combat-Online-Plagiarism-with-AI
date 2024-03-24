@@ -1,0 +1,36 @@
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+class PlagiarismDetector:
+    def __init__(self, documents):
+        self.documents = documents
+        self.vectorizer = TfidfVectorizer()
+        self.tfidf_matrix = self.vectorizer.fit_transform(documents)
+        
+    def detect_plagiarism(self, document):
+        document_tfidf = self.vectorizer.transform([document])
+        similarities = cosine_similarity(self.tfidf_matrix, document_tfidf)
+        return similarities.squeeze()
+
+# Example usage
+if __name__ == "__main__":
+    # Example documents
+    documents = [
+        "The internet is flooded with content.",
+        "It is challenging to spot plagiarism.",
+        "Our AI-powered tool can help authors and news organizations quickly detect copied content.",
+        "Don't let plagiarism go unnoticed; empower yourself with our plagiarism detection software."
+    ]
+    
+    # Initialize plagiarism detector
+    detector = PlagiarismDetector(documents)
+    
+    # Document to check for plagiarism
+    document_to_check = "The internet is filled with information."
+    
+    # Detect plagiarism
+    similarities = detector.detect_plagiarism(document_to_check)
+    
+    # Output similarities
+    for i, similarity in enumerate(similarities):
+        print(f"Similarity with Document {i+1}: {similarity:.2f}")
